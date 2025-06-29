@@ -1,6 +1,6 @@
 # pg-mcp-go
 
-**pg-mcp-go** is an enterprise-grade Model Context Protocol (MCP) server built in Go by Paper Indonesia. It provides MCP tools as HTTP/SSE services with comprehensive enterprise infrastructure integrations including databases, caching, messaging, monitoring, and observability.
+**pg-mcp-go** is an enterprise-grade Model Context Protocol (MCP) server built in Go by Paper Indonesia Development Team. It provides MCP tools as HTTP/SSE services with comprehensive enterprise infrastructure integrations including databases, caching, messaging, monitoring, and observability.
 
 ## Features
 
@@ -219,3 +219,7 @@ make gen-mocks
 ## Support
 
 [Add support information here]
+
+## Contributors
+
+- [Febriansyah](https://github.com/febriansyahnr)

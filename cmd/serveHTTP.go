@@ -15,7 +15,10 @@ import (
 	pdkRedis "github.com/paper-indonesia/pdk/v2/redisExt"
 	"github.com/paper-indonesia/pg-mcp-server/config"
 	"github.com/paper-indonesia/pg-mcp-server/constant"
+	disbursementHandler "github.com/paper-indonesia/pg-mcp-server/internal/handlers/disbursement"
 	extraHandler "github.com/paper-indonesia/pg-mcp-server/internal/handlers/extra"
+	backendportalRepository "github.com/paper-indonesia/pg-mcp-server/internal/repository/backendPortal"
+	disbursementService "github.com/paper-indonesia/pg-mcp-server/internal/service/disbursement"
 	pkgMonitor "github.com/paper-indonesia/pg-mcp-server/pkg/monitor"
 	"github.com/paper-indonesia/pg-mcp-server/pkg/mySqlExt"
 	"github.com/paper-indonesia/pg-mcp-server/pkg/rabbitMqExt"
@@ -198,16 +201,30 @@ var serveHTTPCmd = &cobra.Command{
 		defer rabbitMqExt.Close()
 
 		// setup repositories
+		backendPortalRepo := backendportalRepository.New(
+			conf,
+			backendportalRepository.WithDBClient(backendPortalDBClient),
+			backendportalRepository.WithLogger(pdkLog),
+		)
 
 		// setup services
+		disbursementService := disbursementService.New(
+			conf,
+			disbursementService.WithBackendPortalRepository(backendPortalRepo),
+		)
 
 		// setup handlers
 		extrasHandler := extraHandler.New()
+		disbursementHandler := disbursementHandler.New(
+			conf,
+			disbursementHandler.WithDisbursementService(disbursementService),
+		)
 
 		// setup mcp server
 		mcpServer := NewMCPServer(
 			conf,
 			WithExtraHandler(extrasHandler),
+			WithDisbursementHandler(disbursementHandler),
 		)
 		mcpServer.StartSSE()
 	},

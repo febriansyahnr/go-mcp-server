@@ -130,3 +130,30 @@ func IsNumericString(s string) bool {
 
 	return numericRegex.MatchString(s)
 }
+
+func SanitizeInput(input string) string {
+	if input == "" {
+		return ""
+	}
+
+	// Remove dangerous SQL characters and keywords
+	dangerous := []string{
+		"'", "\"", ";", "--", "/*", "*/", "xp_", "sp_",
+		"SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "CREATE",
+		"ALTER", "EXEC", "EXECUTE", "UNION", "OR", "AND",
+		"select", "insert", "update", "delete", "drop", "create",
+		"alter", "exec", "execute", "union", "or", "and",
+	}
+
+	sanitized := input
+	for _, pattern := range dangerous {
+		sanitized = strings.ReplaceAll(sanitized, pattern, "")
+	}
+
+	// Remove extra whitespace
+	re := regexp.MustCompile(`\s+`)
+	sanitized = re.ReplaceAllString(sanitized, " ")
+	sanitized = strings.TrimSpace(sanitized)
+
+	return sanitized
+}

@@ -1,2 +1,34 @@
 .secret.yaml
 .config.yaml
+tmp
+vendor
+private.key
+public.key
+.DS_Store
+
+.idea
+
+secrets-manager
+
+# stdout
+snap-core-processor.out
+cover-head.profile
+filtered-coverage.out
+coverage.txt
+coverage.out
+
+# nix
+.envrc
+.direnv
+flake.lock
+flake.nix
+.vscode/launch.json
+.feature-flag.yaml
+
+downloader_config.json
+
+__debug*
+
+*.pem
+gitcodechurn.py
+.vscode/restless.json
