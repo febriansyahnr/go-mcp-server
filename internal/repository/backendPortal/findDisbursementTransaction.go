@@ -32,20 +32,23 @@ func (r *BackendPortalRepository) FindDisbursementTransaction(ctx context.Contex
 			at.transaction_timestamp,
 			at.status 
 		from 
-			account_transactions at
+			%s at
 		left join disbursements d on at.reference_id = d.uuid
 		left join merchants m on at.merchant_id = m.uuid
-		where %s
+		%s
 		and at.type = 'DISBURSEMENT' 
 		and at.channel = 'BANK_TRANSFER' 
 		limit 1
 	`
 
 	conditions := q.Query()
+	if conditions != "" {
+		conditions = "where " + conditions
+	}
 
 	ctx = context.WithValue(ctx, constant.CtxSQLTableNameKey, tableName)
 
-	query := fmt.Sprintf(sqlQuery, conditions)
+	query := fmt.Sprintf(sqlQuery, tableName, conditions)
 
 	var transaction disbursementModel.DisbursementTransaction
 	err := r.dbClient.GetContext(ctx, &transaction, query)

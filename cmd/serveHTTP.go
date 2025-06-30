@@ -18,6 +18,7 @@ import (
 	disbursementHandler "github.com/paper-indonesia/pg-mcp-server/internal/handlers/disbursement"
 	extraHandler "github.com/paper-indonesia/pg-mcp-server/internal/handlers/extra"
 	backendportalRepository "github.com/paper-indonesia/pg-mcp-server/internal/repository/backendPortal"
+	snapcoreRepository "github.com/paper-indonesia/pg-mcp-server/internal/repository/snapcore"
 	disbursementService "github.com/paper-indonesia/pg-mcp-server/internal/service/disbursement"
 	pkgMonitor "github.com/paper-indonesia/pg-mcp-server/pkg/monitor"
 	"github.com/paper-indonesia/pg-mcp-server/pkg/mySqlExt"
@@ -207,10 +208,17 @@ var serveHTTPCmd = &cobra.Command{
 			backendportalRepository.WithLogger(pdkLog),
 		)
 
+		snapcoreRepo := snapcoreRepository.New(
+			conf,
+			snapcoreRepository.WithDBClient(snapCoreDBClient),
+			snapcoreRepository.WithLogger(pdkLog),
+		)
+
 		// setup services
 		disbursementService := disbursementService.New(
 			conf,
 			disbursementService.WithBackendPortalRepository(backendPortalRepo),
+			disbursementService.WithSnapCoreRepository(snapcoreRepo),
 		)
 
 		// setup handlers
